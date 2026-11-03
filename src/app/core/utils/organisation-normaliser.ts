@@ -2,13 +2,13 @@ import type {
   Organisation,
   OrganisationStatus,
 } from '../../features/organisations/models/organisation.model';
+
 import type { RawOrganisation } from '../../features/organisations/models/raw-organisation.model';
+
 import type {
   OrganisationNormalisationResult,
   RejectedOrganisation,
 } from '../../features/organisations/models/organisation-normalisation-result.model';
-
-const VALID_STATUSES: readonly OrganisationStatus[] = ['active', 'inactive', 'pending'];
 
 function normaliseStatus(value: string | null | undefined): OrganisationStatus {
   const status = value?.trim().toLowerCase();
@@ -34,8 +34,20 @@ function normaliseMemberCount(value: number | string | null | undefined): number
   return Math.floor(parsedValue);
 }
 
-function normaliseDate(value: string | null | undefined): Date | null {
-  if (!value) {
+function normaliseOwner(value: RawOrganisation['owner']): string {
+  if (typeof value === 'string') {
+    return value.trim() || 'Unknown';
+  }
+
+  if (value && typeof value === 'object') {
+    return value.email?.trim() || 'Unknown';
+  }
+
+  return 'Unknown';
+}
+
+function normaliseDate(value: string | number | null | undefined): Date | null {
+  if (value === null || value === undefined || value === '') {
     return null;
   }
 
@@ -58,14 +70,10 @@ export function normaliseOrganisation(raw: RawOrganisation): Organisation | null
     name,
     status: normaliseStatus(raw.status),
     memberCount: normaliseMemberCount(raw.memberCount),
-    owner: raw.owner?.trim() || 'Unknown',
+    owner: normaliseOwner(raw.owner),
     createdAt: normaliseDate(raw.createdAt),
   };
 }
-
-// export function normaliseOrganisations(records: readonly RawOrganisation[]): Organisation[] {
-//   return records.map(normaliseOrganisation).filter((organisation) => organisation !== null);
-// }
 
 export function normaliseOrganisations(
   records: readonly RawOrganisation[],
@@ -88,14 +96,11 @@ export function normaliseOrganisations(
       continue;
     }
 
-    organisations.push({
-      id,
-      name,
-      status: normaliseStatus(raw.status),
-      memberCount: normaliseMemberCount(raw.memberCount),
-      owner: raw.owner?.trim() || 'Unknown',
-      createdAt: normaliseDate(raw.createdAt),
-    });
+    const organisation = normaliseOrganisation(raw);
+
+    if (organisation) {
+      organisations.push(organisation);
+    }
   }
 
   return {

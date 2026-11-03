@@ -1,67 +1,80 @@
 [
   {
-    "id": 101,
-    "name": "  Acme Technologies  ",
-    "status": " ACTIVE ",
-    "memberCount": "25",
-    "owner": "John Smith",
-    "createdAt": "2025-01-15T09:30:00Z"
-  },
-  {
-    "id": "ORG-102",
-    "name": "BlueSky Solutions",
-    "status": "inactive",
-    "memberCount": 48,
-    "owner": "Sarah Johnson",
-    "createdAt": "2024-11-20"
-  },
-  {
-    "id": 103,
-    "name": "  Green Earth Foundation",
-    "status": "Pending",
-    "memberCount": "12",
-    "owner": null,
-    "createdAt": "2025-02-28T14:00:00Z"
-  },
-  {
-    "id": "ORG-104",
-    "name": "Nexus Digital",
-    "status": "ACTIVE",
-    "memberCount": null,
-    "owner": "Michael Brown",
-    "createdAt": "invalid-date"
-  },
-  {
-    "id": 105,
-    "name": "Horizon Healthcare",
-    "status": " archived ",
-    "memberCount": "  87  ",
-    "owner": "Emily Davis",
-    "createdAt": "2023-08-10T10:15:00Z"
-  },
-  {
-    "id": 106,
-    "name": "  ",
-    "status": null,
-    "memberCount": -5,
-    "owner": "",
-    "createdAt": null
-  },
-  {
-    "id": "ORG-107",
-    "name": "Vertex Consulting",
+    "id": 1,
+    "name": "Northwind Traders",
     "status": "active",
-    "memberCount": "invalid",
-    "owner": "David Wilson",
-    "createdAt": "2024-06-05T08:00:00Z"
+    "memberCount": 42,
+    "owner": {
+      "email": "ops@northwind.example"
+    },
+    "createdAt": "2024-03-11T09:12:00Z"
   },
   {
-    "id": 108,
-    "name": "Summit Education",
-    "status": "INACTIVE",
-    "memberCount": 156,
-    "owner": "Olivia Taylor",
-    "createdAt": "2022-12-01"
+    "id": 2,
+    "name": "",
+    "status": "ACTIVE",
+    "memberCount": "12",
+    "owner": {
+      "email": "a@b.example"
+    },
+    "createdAt": 1710150720000
+  },
+  {
+    "id": 3,
+    "name": null,
+    "status": "Active",
+    "memberCount": -1,
+    "createdAt": "2024-01-02T00:00:00Z"
+  },
+  {
+    "id": 42,
+    "name": "Globex Corporation",
+    "status": "suspended",
+    "memberCount": 7,
+    "owner": {
+      "email": "hq@globex.example"
+    },
+    "createdAt": "2023-11-30T14:45:10Z"
+  },
+  {
+    "id": 42,
+    "name": "Globex Corporation Ltd",
+    "status": "actve",
+    "memberCount": 7,
+    "owner": {
+      "email": "hq@globex.example"
+    },
+    "createdAt": "2023-11-30T14:45:10Z"
+  },
+  {
+    "id": 6,
+    "name": "شركة الأمل ��",
+    "status": "active",
+    "memberCount": 3,
+    "owner": {
+      "email": "info@amal.example"
+    },
+    "createdAt": "2025-06-01T08:00:00Z"
+  },
+  {
+    "id": 7,
+    "name": "The Very Long Organisation Name That Somebody Actually Typed Into The Field Because Nobody Validated It And It Keeps Going Well Past Any Reasonable Column Width And Still Has Not Stopped",
+    "status": "inactive",
+    "memberCount": 0,
+    "owner": {
+      "email": "long@example.com"
+    },
+    "createdAt": "2024-07-19T16:20:00Z"
+  },
+  {
+    "id": 8,
+    "name": "Initech",
+    "status": null,
+    "memberCount": null,
+    "owner": {
+      "email": "not-an-email"
+    },
+    "createdAt": "not a date"
   },
   {
     "id": 1001,
