@@ -3,22 +3,26 @@
 ## 1. Architecture and technology choices
 
 ### Angular standalone architecture
+
 - **Chosen:** Angular standalone components without NgModules.
 - **Why:** Standalone components simplify application structure and make dependencies explicit.
 - **Alternative considered:** NgModule-based architecture.
 - **Why rejected:** It adds module configuration that is unnecessary for this application.
 
 ### Component state management
+
 - **Chosen:** Angular Signals for organisation data, loading state, errors, filters and sorting.
 - **Why:** Signals provide reactive state updates and computed values without requiring a separate state-management library.
 - **Alternative considered:** BehaviorSubject-based view state.
 - **Why rejected:** Signals are more suitable for the component and application state required by this assignment.
 
 ### Dependency injection
+
 - **Chosen:** Angular `inject()` function.
 - **Why:** It keeps dependency injection consistent with modern Angular standalone architecture.
 
 ### Reactive forms
+
 - **Chosen:** Typed, non-nullable reactive form controls with validators.
 - **Why:** They provide predictable form values and centralised validation.
 - **Validation behaviour:** Field errors are displayed after blur, while submission marks invalid fields as touched.
@@ -46,6 +50,8 @@ Rejected records are tracked separately so that invalid data is not silently los
 
 The UI displays a translated fallback for missing owner and date values.
 
+The fixture contains 137 records in total. After normalisation, 135 records are accepted and 2 records are rejected because they do not have valid required data. Rejected records are tracked separately for visibility.
+
 ## 3. Conflict resolution – API pagination and request limits
 
 **Conflict:**
@@ -66,7 +72,8 @@ The UI displays a translated fallback for missing owner and date values.
 There is no backend available for this assessment. The fixture is fetched locally, and the service simulates paginated requests by slicing the local dataset into batches. Therefore, these are simulated page requests, not separate real API network requests.
 
 **Trade-off:**
-The UI meets the requirement of showing all organisations together while demonstrating how pagination, request limits, caching and retry behaviour would be handled when integrating with a real API.
+
+The UI displays all successfully loaded organisations together without user-facing pagination. Internally, the service simulates batches of 25 records and applies request rate limiting, caching and retry behaviour. This demonstrates the intended API integration approach while acknowledging that the current implementation uses a local fixture rather than a real backend.
 
 ## 4. Conflict resolution – Status accessibility
 
@@ -79,6 +86,7 @@ The UI meets the requirement of showing all organisations together while demonst
 - Use distinct colours for active, inactive, pending and unknown statuses.
 
 **Why:**
+
 Users can identify the organisation status through text even if they cannot distinguish the colours.
 
 ## 5. Search, filtering and sorting
@@ -104,6 +112,7 @@ Users can identify the organisation status through text even if they cannot dist
 ## 7. Loading, empty and error states
 
 The application distinguishes between:
+
 - Loading state while organisation data is being retrieved.
 - Empty state when no records match the current search or filter.
 - Error state when a request fails.
@@ -114,11 +123,13 @@ The service simulates request failures to demonstrate error handling in the abse
 ## 8. Translation and design tokens
 
 ### Translation
+
 - **Chosen:** A central `en.json` translation file for user-facing text.
 - Components use translation keys instead of hardcoded display messages.
 - This makes future language support easier.
 
 ### Design tokens
+
 - **Chosen:** CSS custom properties for colours, spacing, typography, borders and shadows.
 - Brand and theme-related values can be updated centrally.
 - Components consume tokens instead of defining their own colour and spacing values.
@@ -128,6 +139,7 @@ The service simulates request failures to demonstrate error handling in the abse
 ChatGPT was used as an AI-assisted development tool during this assessment.
 
 Areas where AI assistance was used:
+
 - Discussing implementation approaches and architecture decisions.
 - Generating and refining code suggestions.
 - Debugging Angular and TypeScript compilation issues.
@@ -135,7 +147,9 @@ Areas where AI assistance was used:
 - Reviewing the implementation against the assessment requirements.
 - Preparing technical explanations and documentation.
 
-All suggested changes were reviewed and applied during development. The application was built and manually tested throughout the process.
+AI-generated suggestions were reviewed before use, and relevant changes were adapted and applied based on the project requirements.
+
+The application was manually tested throughout development.
 
 I am responsible for understanding and explaining the final implementation and its trade-offs. I will also demonstrate my ability to make changes independently during the live coding discussion.
 
@@ -148,6 +162,7 @@ Clarification was requested. The implementation follows the requirements and con
 ## 11. Future improvements
 
 Given additional development time, I would:
+
 - Integrate a real paginated backend API.
 - Add automated unit and integration tests.
 - Improve observability with structured error logging.

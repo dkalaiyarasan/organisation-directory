@@ -32,9 +32,9 @@ A responsive organisation management application built with Angular. It allows u
 
 ### Prerequisites
 
-- Node.js
-- npm
-- Angular CLI
+- Node.js 26+
+- npm 9+
+- Angular CLI 22+
 
 ### Installation
 
@@ -78,7 +78,9 @@ Run the production build:
 ng build
 ```
 
-Build output is generated in the `dist/` directory.
+Build output is generated in:
+
+`dist/organisation-directory/browser/`
 
 ## Testing
 
@@ -119,6 +121,8 @@ The application uses a local organisation fixture containing 137 records, includ
 
 A normalisation layer converts raw records into a consistent application model. Records without a valid ID or name are rejected, while other invalid or missing values are handled using defined fallback rules.
 
+Out of the 137 fixture records, 135 are accepted after normalisation and 2 are rejected because they have missing or invalid required identifiers or names.
+
 Since the assessment does not provide a backend, the service simulates paginated requests by splitting the local fixture into batches of 25 records. It also demonstrates request rate limiting, caching, simulated failures and retry behaviour.
 
 These are simulated API behaviours rather than separate real backend requests.
@@ -129,6 +133,6 @@ Important implementation decisions, trade-offs and conflict resolutions are docu
 
 ## AI Assistance
 
-AI tools were used during development for implementation guidance, code review, debugging and documentation support.
+ChatGPT was used during development for implementation guidance, code review, debugging and documentation support.
 
 The final implementation was reviewed and manually verified. Details of AI assistance and development decisions are documented in `DECISIONS.md`.
