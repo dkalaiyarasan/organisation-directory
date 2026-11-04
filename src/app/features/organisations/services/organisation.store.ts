@@ -147,7 +147,7 @@ export class OrganisationStore {
       },
 
       error: () => {
-        this._error.set('Unable to load organisations. Please try again.');
+        this._error.set('organisation.loadError');
         this._loading.set(false);
       },
     });

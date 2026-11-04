@@ -35,15 +35,9 @@ function normaliseMemberCount(value: number | string | null | undefined): number
 }
 
 function normaliseOwner(value: RawOrganisation['owner']): string {
-  if (typeof value === 'string') {
-    return value.trim() || 'Unknown';
-  }
-
-  if (value && typeof value === 'object') {
-    return value.email?.trim() || 'Unknown';
-  }
-
-  return 'Unknown';
+  if (typeof value === 'string') return value.trim();
+  if (value && typeof value === 'object') return value.email?.trim() ?? '';
+  return '';
 }
 
 function normaliseDate(value: string | number | null | undefined): Date | null {

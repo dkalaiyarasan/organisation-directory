@@ -10,8 +10,6 @@ import { TranslationService } from './core/services/translation.service';
   styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = 'Organisation Directory';
-
   protected readonly translationService = inject(TranslationService);
 
   constructor() {

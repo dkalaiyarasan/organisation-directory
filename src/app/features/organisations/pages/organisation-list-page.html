@@ -9,6 +9,7 @@
       {{ translation.translate('organisation.totalRecords') }}:
       <strong>{{ store.validCount() }}</strong>
     </div>
+
     @if (store.loaded()) {
       <button type="button" class="create-button" (click)="openCreateForm()">
         {{ translation.translate('organisation.create') }}
@@ -20,10 +21,9 @@
     <section class="state-container" aria-live="polite">
       {{ translation.translate('organisation.loading') }}
     </section>
-  } @else if (store.error(); as errorMessage) {
+  } @else if (store.error()) {
     <section class="state-container error-state" role="alert">
       <h2>{{ translation.translate('organisation.loadError') }}</h2>
-      <p>{{ errorMessage }}</p>
 
       <button type="button" (click)="store.retry()">
         {{ translation.translate('organisation.retry') }}
@@ -59,19 +59,15 @@
             <option value="all">
               {{ translation.translate('organisation.allStatuses') }}
             </option>
-
             <option value="active">
               {{ translation.translate('organisation.active') }}
             </option>
-
             <option value="inactive">
               {{ translation.translate('organisation.inactive') }}
             </option>
-
             <option value="pending">
               {{ translation.translate('organisation.pending') }}
             </option>
-
             <option value="unknown">
               {{ translation.translate('organisation.unknown') }}
             </option>
@@ -126,7 +122,13 @@
 
                   <td>{{ organisation.memberCount }}</td>
 
-                  <td>{{ organisation.owner }}</td>
+                  <td>
+                    @if (organisation.owner) {
+                      {{ organisation.owner }}
+                    } @else {
+                      {{ translation.translate('common.unknown') }}
+                    }
+                  </td>
 
                   <td>
                     @if (organisation.createdAt; as createdAt) {
@@ -148,7 +150,8 @@
       }
     </section>
   }
-  @if (createFormOpen()) {
-    <app-organisation-create-form (closed)="closeCreateForm()" />
-  }
 </main>
+
+@if (createFormOpen()) {
+  <app-organisation-create-form (closed)="closeCreateForm()" />
+}
