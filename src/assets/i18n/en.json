@@ -7,8 +7,9 @@
         "title": "Organisations",
         "description": "View and manage all organisations.",
         "create": "Create organisation",
-        "search": "Search by organisation name...",
-        "filterStatus": "Filter by status",
+        "searchLabel": "Search organisations",
+        "searchPlaceholder": "Search by organisation name...",
+        "filterByStatus": "Filter by status",
         "allStatuses": "All statuses",
         "name": "Organisation name",
         "status": "Status",
@@ -29,7 +30,12 @@
         "sortByName": "Sort by name",
         "sortByCreatedDate": "Sort by created date",
         "ascending": "Ascending",
-        "descending": "Descending"
+        "descending": "Descending",
+        "sortBy": "Sort by",
+        "sortNameAsc": "Name (A–Z)",
+        "sortNameDesc": "Name (Z–A)",
+        "sortNewest": "Created date (newest first)",
+        "sortOldest": "Created date (oldest first)"
     },
     "form": {
         "title": "Create organisation",

@@ -26,7 +26,73 @@
     </section>
   } @else {
     <section class="table-section">
-      @if (store.organisations().length > 0) {
+      <div class="directory-toolbar">
+        <div class="search-control">
+          <label for="organisation-search">
+            {{ translation.translate('organisation.searchLabel') }}
+          </label>
+
+          <input
+            id="organisation-search"
+            type="search"
+            [value]="store.searchTerm()"
+            (input)="store.setSearchTerm($any($event.target).value)"
+            [placeholder]="translation.translate('organisation.searchPlaceholder')"
+          />
+        </div>
+
+        <div class="sort-control">
+          <label for="organisation-status">
+            {{ translation.translate('organisation.filterByStatus') }}
+          </label>
+
+          <select
+            id="organisation-status"
+            [value]="store.statusFilter()"
+            (change)="onStatusChange($any($event.target).value)"
+          >
+            <option value="all">
+              {{ translation.translate('organisation.allStatuses') }}
+            </option>
+
+            <option value="active">
+              {{ translation.translate('organisation.active') }}
+            </option>
+
+            <option value="inactive">
+              {{ translation.translate('organisation.inactive') }}
+            </option>
+
+            <option value="pending">
+              {{ translation.translate('organisation.pending') }}
+            </option>
+
+            <option value="unknown">
+              {{ translation.translate('organisation.unknown') }}
+            </option>
+          </select>
+        </div>
+
+        <div class="sort-control">
+          <label for="organisation-sort">
+            {{ translation.translate('organisation.sortBy') }}
+          </label>
+
+          <select
+            id="organisation-sort"
+            [value]="store.sortOrder()"
+            (change)="onSortChange($any($event.target).value)"
+          >
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value">
+                {{ translation.translate(option.label) }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      @if (store.sortedOrganisations().length > 0) {
         <div class="table-wrapper">
           <table>
             <thead>
@@ -40,7 +106,7 @@
             </thead>
 
             <tbody>
-              @for (organisation of store.organisations(); track $index) {
+              @for (organisation of store.sortedOrganisations(); track $index) {
                 <tr>
                   <td class="organisation-name">
                     {{ organisation.name }}

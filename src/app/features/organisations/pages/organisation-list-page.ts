@@ -1,7 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, Injector } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { distinctUntilChanged, skip } from 'rxjs';
 
-import { OrganisationStore } from '../services/organisation.store';
+import {
+  OrganisationStore,
+  type OrganisationSortOrder,
+  type OrganisationStatusFilter,
+} from '../services/organisation.store';
+
+import type { OrganisationStatus } from '../models/organisation.model';
+
 import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
@@ -16,7 +26,129 @@ export class OrganisationListPage {
 
   protected readonly translation = inject(TranslationService);
 
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
+
+  private readonly validStatuses: OrganisationStatus[] = [
+    'active',
+    'inactive',
+    'pending',
+    'unknown',
+  ];
+
+  protected readonly sortOptions: {
+    value: OrganisationSortOrder;
+    label: string;
+  }[] = [
+    { value: 'name-asc', label: 'organisation.sortNameAsc' },
+    { value: 'name-desc', label: 'organisation.sortNameDesc' },
+    { value: 'createdAt-desc', label: 'organisation.sortNewest' },
+    { value: 'createdAt-asc', label: 'organisation.sortOldest' },
+  ];
+
   constructor() {
+    this.subscribeToQueryParams();
+    this.subscribeToSearchChanges();
+
     this.store.loadOrganisations();
+  }
+
+  // Restore search and status filter values from the URL.
+  private subscribeToQueryParams(): void {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const search = params.get('search') ?? '';
+      const rawStatus = params.get('status');
+
+      const status: OrganisationStatusFilter =
+        rawStatus === null || rawStatus === 'all'
+          ? 'all'
+          : this.isValidStatus(rawStatus)
+            ? rawStatus
+            : 'all';
+
+      this.store.setSearchTerm(search);
+      this.store.setStatusFilter(status);
+
+      // Remove invalid or unnecessary status parameters.
+      if (rawStatus !== null && (rawStatus === 'all' || !this.isValidStatus(rawStatus))) {
+        this.updateQueryParams({ status: 'all' });
+      }
+    });
+  }
+
+  // Synchronise the debounced search signal with the URL.
+  private subscribeToSearchChanges(): void {
+    toObservable(this.store.searchTerm, {
+      injector: this.injector,
+    })
+      .pipe(skip(1), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((search) => {
+        this.updateQueryParams({ search });
+      });
+  }
+
+  // Validate status values received from the URL or UI.
+  private isValidStatus(value: string): value is OrganisationStatus {
+    return this.validStatuses.includes(value as OrganisationStatus);
+  }
+
+  // Handle sorting changes.
+  onSortChange(value: string): void {
+    const isValidSortOrder = this.sortOptions.some((option) => option.value === value);
+
+    if (isValidSortOrder) {
+      this.store.setSortOrder(value as OrganisationSortOrder);
+    }
+  }
+
+  // Handle status filter changes.
+  onStatusChange(value: string): void {
+    const status: OrganisationStatusFilter =
+      value === 'all' || this.isValidStatus(value) ? value : 'all';
+
+    this.store.setStatusFilter(status);
+
+    this.updateQueryParams({ status });
+  }
+
+  // Update URL parameters without removing unrelated parameters.
+  private updateQueryParams(params: { search?: string; status?: OrganisationStatusFilter }): void {
+    const queryParams: Record<string, string | null> = {};
+
+    let hasChanges = false;
+
+    if (params.search !== undefined) {
+      const search = params.search.trim();
+      const currentSearch = this.route.snapshot.queryParamMap.get('search') ?? '';
+
+      if (search !== currentSearch) {
+        queryParams['search'] = search || null;
+        hasChanges = true;
+      }
+    }
+
+    if (params.status !== undefined) {
+      const status = params.status === 'all' ? null : params.status;
+
+      const currentStatus = this.route.snapshot.queryParamMap.get('status');
+
+      if (status !== currentStatus) {
+        queryParams['status'] = status;
+        hasChanges = true;
+      }
+    }
+
+    if (!hasChanges) {
+      return;
+    }
+
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 }

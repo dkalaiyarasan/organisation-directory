@@ -10,6 +10,7 @@ import {
   of,
   shareReplay,
   switchMap,
+  tap,
   throwError,
   timer,
   toArray,
@@ -37,6 +38,9 @@ export class OrganisationApiService {
 
   private requestStartTimes: number[] = [];
 
+  // Cache successfully fetched pages so retries do not fetch them again.
+  private readonly pageCache = new Map<number, OrganisationPage>();
+
   // Load and cache the raw fixture once.
   private readonly rawRecords$: Observable<RawOrganisation[]> = this.http
     .get<RawOrganisation[]>(this.fixtureUrl)
@@ -55,9 +59,23 @@ export class OrganisationApiService {
         const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
         return from(pages).pipe(
-          concatMap((page) =>
-            this.waitForRequestSlot().pipe(switchMap(() => this.requestPage(records, page))),
-          ),
+          concatMap((page) => {
+            // Reuse a page if it was successfully fetched earlier.
+            const cachedPage = this.pageCache.get(page);
+
+            if (cachedPage) {
+              return of(cachedPage);
+            }
+
+            // Fetch only pages that are not already cached.
+            return this.waitForRequestSlot().pipe(
+              switchMap(() => this.requestPage(records, page)),
+              tap((response) => {
+                // Cache only successful responses.
+                this.pageCache.set(page, response);
+              }),
+            );
+          }),
           toArray(),
           map((responses) =>
             normaliseOrganisations(responses.flatMap((response) => response.data)),
