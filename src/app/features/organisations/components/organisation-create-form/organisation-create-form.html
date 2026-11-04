@@ -1,0 +1,143 @@
+<dialog
+  #dialog
+  class="organisation-dialog"
+  aria-labelledby="create-organisation-title"
+  (close)="onDialogClose()"
+>
+  <div class="dialog-header">
+    <h2 id="create-organisation-title">
+      {{ translation.translate('form.title') }}
+    </h2>
+
+    <button
+      type="button"
+      class="close-button"
+      [attr.aria-label]="translation.translate('common.close')"
+      (click)="close()"
+    >
+      &times;
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-field">
+      <label for="organisation-name">
+        {{ translation.translate('form.name') }}
+        <span aria-hidden="true">*</span>
+      </label>
+
+      <input
+        id="organisation-name"
+        type="text"
+        formControlName="name"
+        maxlength="80"
+        [attr.aria-invalid]="form.controls.name.invalid && form.controls.name.touched"
+        aria-describedby="organisation-name-error"
+      />
+
+      @if (form.controls.name.touched && form.controls.name.errors; as errors) {
+        <div id="organisation-name-error" class="field-error" role="alert">
+          @if (errors['required']) {
+            {{ translation.translate('form.nameRequired') }}
+          } @else if (errors['minlength']) {
+            {{ translation.translate('form.nameMinLength') }}
+          } @else if (errors['maxlength']) {
+            {{ translation.translate('form.nameMaxLength') }}
+          } @else if (errors['duplicateName']) {
+            {{ translation.translate('form.nameDuplicate') }}
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="organisation-status">
+        {{ translation.translate('form.status') }}
+        <span aria-hidden="true">*</span>
+      </label>
+
+      <select
+        id="organisation-status"
+        formControlName="status"
+        [attr.aria-invalid]="form.controls.status.invalid && form.controls.status.touched"
+        aria-describedby="organisation-status-error"
+      >
+        <option value="" disabled>
+          {{ translation.translate('form.statusRequired') }}
+        </option>
+        <option value="active">
+          {{ translation.translate('organisation.active') }}
+        </option>
+        <option value="inactive">
+          {{ translation.translate('organisation.inactive') }}
+        </option>
+        <option value="pending">
+          {{ translation.translate('organisation.pending') }}
+        </option>
+      </select>
+
+      @if (form.controls.status.touched && form.controls.status.hasError('required')) {
+        <div id="organisation-status-error" class="field-error" role="alert">
+          {{ translation.translate('form.statusRequired') }}
+        </div>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="organisation-owner-email">
+        {{ translation.translate('form.ownerEmail') }}
+        <span aria-hidden="true">*</span>
+      </label>
+
+      <input
+        id="organisation-owner-email"
+        type="email"
+        formControlName="ownerEmail"
+        [attr.aria-invalid]="form.controls.ownerEmail.invalid && form.controls.ownerEmail.touched"
+        aria-describedby="organisation-owner-error"
+      />
+
+      @if (form.controls.ownerEmail.touched && form.controls.ownerEmail.errors; as errors) {
+        <div id="organisation-owner-error" class="field-error" role="alert">
+          @if (errors['required']) {
+            {{ translation.translate('form.ownerEmailRequired') }}
+          } @else if (errors['email']) {
+            {{ translation.translate('form.ownerEmailInvalid') }}
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="organisation-member-count">
+        {{ translation.translate('form.memberCount') }}
+        <span class="optional-label"> ({{ translation.translate('common.optional') }}) </span>
+      </label>
+
+      <input
+        id="organisation-member-count"
+        type="number"
+        min="0"
+        step="1"
+        formControlName="memberCount"
+        aria-describedby="organisation-member-count-error"
+      />
+
+      @if (form.controls.memberCount.touched && form.controls.memberCount.hasError('min')) {
+        <div id="organisation-member-count-error" class="field-error" role="alert">
+          {{ translation.translate('form.memberCountMin') }}
+        </div>
+      }
+    </div>
+
+    <div class="dialog-actions">
+      <button type="button" class="cancel-button" (click)="close()">
+        {{ translation.translate('form.cancel') }}
+      </button>
+
+      <button type="submit" class="submit-button">
+        {{ translation.translate('form.submit') }}
+      </button>
+    </div>
+  </form>
+</dialog>

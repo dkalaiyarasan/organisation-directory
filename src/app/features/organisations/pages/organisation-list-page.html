@@ -9,6 +9,11 @@
       {{ translation.translate('organisation.totalRecords') }}:
       <strong>{{ store.validCount() }}</strong>
     </div>
+    @if (store.loaded()) {
+      <button type="button" class="create-button" (click)="openCreateForm()">
+        {{ translation.translate('organisation.create') }}
+      </button>
+    }
   </header>
 
   @if (store.loading()) {
@@ -142,5 +147,8 @@
         </div>
       }
     </section>
+  }
+  @if (createFormOpen()) {
+    <app-organisation-create-form (closed)="closeCreateForm()" />
   }
 </main>

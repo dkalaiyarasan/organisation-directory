@@ -97,6 +97,26 @@ export class OrganisationStore {
     });
   });
 
+  // Check for an existing organisation name, ignoring letter case.
+  organisationNameExists(name: string): boolean {
+    const normalizedName = name.trim().toLowerCase();
+
+    return this._organisations().some(
+      (organisation) => organisation.name.trim().toLowerCase() === normalizedName,
+    );
+  }
+
+  // Add a new organisation while protecting against duplicate names.
+  addOrganisation(organisation: Organisation): boolean {
+    if (this.organisationNameExists(organisation.name)) {
+      return false;
+    }
+
+    this._organisations.update((organisations) => [...organisations, organisation]);
+
+    return true;
+  }
+
   setSortOrder(sortOrder: OrganisationSortOrder): void {
     this._sortOrder.set(sortOrder);
   }

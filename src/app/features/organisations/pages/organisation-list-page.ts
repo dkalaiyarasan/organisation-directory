@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, Injector } from '@angular/core';
+import { Component, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -13,23 +13,25 @@ import {
 import type { OrganisationStatus } from '../models/organisation.model';
 
 import { TranslationService } from '../../../core/services/translation.service';
+import { OrganisationCreateForm } from '../components/organisation-create-form/organisation-create-form';
 
 @Component({
   selector: 'app-organisation-list-page',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, OrganisationCreateForm],
   templateUrl: './organisation-list-page.html',
   styleUrl: './organisation-list-page.scss',
 })
 export class OrganisationListPage {
   protected readonly store = inject(OrganisationStore);
-
   protected readonly translation = inject(TranslationService);
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
+
+  protected readonly createFormOpen = signal(false);
 
   private readonly validStatuses: OrganisationStatus[] = [
     'active',
@@ -51,11 +53,17 @@ export class OrganisationListPage {
   constructor() {
     this.subscribeToQueryParams();
     this.subscribeToSearchChanges();
-
     this.store.loadOrganisations();
   }
 
-  // Restore search and status filter values from the URL.
+  openCreateForm(): void {
+    this.createFormOpen.set(true);
+  }
+
+  closeCreateForm(): void {
+    this.createFormOpen.set(false);
+  }
+
   private subscribeToQueryParams(): void {
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const search = params.get('search') ?? '';
@@ -71,30 +79,22 @@ export class OrganisationListPage {
       this.store.setSearchTerm(search);
       this.store.setStatusFilter(status);
 
-      // Remove invalid or unnecessary status parameters.
       if (rawStatus !== null && (rawStatus === 'all' || !this.isValidStatus(rawStatus))) {
         this.updateQueryParams({ status: 'all' });
       }
     });
   }
 
-  // Synchronise the debounced search signal with the URL.
   private subscribeToSearchChanges(): void {
-    toObservable(this.store.searchTerm, {
-      injector: this.injector,
-    })
+    toObservable(this.store.searchTerm, { injector: this.injector })
       .pipe(skip(1), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((search) => {
-        this.updateQueryParams({ search });
-      });
+      .subscribe((search) => this.updateQueryParams({ search }));
   }
 
-  // Validate status values received from the URL or UI.
   private isValidStatus(value: string): value is OrganisationStatus {
     return this.validStatuses.includes(value as OrganisationStatus);
   }
 
-  // Handle sorting changes.
   onSortChange(value: string): void {
     const isValidSortOrder = this.sortOptions.some((option) => option.value === value);
 
@@ -103,20 +103,16 @@ export class OrganisationListPage {
     }
   }
 
-  // Handle status filter changes.
   onStatusChange(value: string): void {
     const status: OrganisationStatusFilter =
       value === 'all' || this.isValidStatus(value) ? value : 'all';
 
     this.store.setStatusFilter(status);
-
     this.updateQueryParams({ status });
   }
 
-  // Update URL parameters without removing unrelated parameters.
   private updateQueryParams(params: { search?: string; status?: OrganisationStatusFilter }): void {
     const queryParams: Record<string, string | null> = {};
-
     let hasChanges = false;
 
     if (params.search !== undefined) {
@@ -131,7 +127,6 @@ export class OrganisationListPage {
 
     if (params.status !== undefined) {
       const status = params.status === 'all' ? null : params.status;
-
       const currentStatus = this.route.snapshot.queryParamMap.get('status');
 
       if (status !== currentStatus) {
