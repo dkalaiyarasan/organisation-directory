@@ -1,0 +1,80 @@
+<main class="directory-container">
+  <header class="page-header">
+    <div>
+      <h1>{{ translation.translate('organisation.title') }}</h1>
+      <p>{{ translation.translate('organisation.description') }}</p>
+    </div>
+
+    <div class="record-count">
+      {{ translation.translate('organisation.totalRecords') }}:
+      <strong>{{ store.validCount() }}</strong>
+    </div>
+  </header>
+
+  @if (store.loading()) {
+    <section class="state-container" aria-live="polite">
+      {{ translation.translate('organisation.loading') }}
+    </section>
+  } @else if (store.error(); as errorMessage) {
+    <section class="state-container error-state" role="alert">
+      <h2>{{ translation.translate('organisation.loadError') }}</h2>
+      <p>{{ errorMessage }}</p>
+
+      <button type="button" (click)="store.retry()">
+        {{ translation.translate('organisation.retry') }}
+      </button>
+    </section>
+  } @else {
+    <section class="table-section">
+      @if (store.organisations().length > 0) {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ translation.translate('organisation.name') }}</th>
+                <th>{{ translation.translate('organisation.status') }}</th>
+                <th>{{ translation.translate('organisation.memberCount') }}</th>
+                <th>{{ translation.translate('organisation.owner') }}</th>
+                <th>{{ translation.translate('organisation.createdAt') }}</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (organisation of store.organisations(); track $index) {
+                <tr>
+                  <td class="organisation-name">
+                    {{ organisation.name }}
+                  </td>
+
+                  <td>
+                    <span class="status-indicator" [attr.data-status]="organisation.status">
+                      <span class="status-dot" aria-hidden="true"></span>
+                      {{ translation.translate('organisation.' + organisation.status) }}
+                    </span>
+                  </td>
+
+                  <td>{{ organisation.memberCount }}</td>
+
+                  <td>{{ organisation.owner }}</td>
+
+                  <td>
+                    @if (organisation.createdAt; as createdAt) {
+                      {{ createdAt | date: 'mediumDate' }}
+                    } @else {
+                      {{ translation.translate('common.unknown') }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="state-container">
+          <h2>{{ translation.translate('organisation.empty') }}</h2>
+          <p>{{ translation.translate('organisation.emptySearch') }}</p>
+        </div>
+      }
+    </section>
+  }
+</main>

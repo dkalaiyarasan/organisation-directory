@@ -1,0 +1,59 @@
+{
+    "app": {
+        "title": "Organisation Directory",
+        "description": "Find, manage and monitor your organisations."
+    },
+    "organisation": {
+        "title": "Organisations",
+        "description": "View and manage all organisations.",
+        "create": "Create organisation",
+        "search": "Search by organisation name...",
+        "filterStatus": "Filter by status",
+        "allStatuses": "All statuses",
+        "name": "Organisation name",
+        "status": "Status",
+        "memberCount": "Members",
+        "owner": "Owner",
+        "createdAt": "Created date",
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "unknown": "Unknown",
+        "empty": "No organisations found.",
+        "emptySearch": "Try changing your search or filters.",
+        "loading": "Loading organisations...",
+        "loadError": "Unable to load organisations.",
+        "retry": "Try again",
+        "totalRecords": "Total organisations",
+        "results": "Results",
+        "sortByName": "Sort by name",
+        "sortByCreatedDate": "Sort by created date",
+        "ascending": "Ascending",
+        "descending": "Descending"
+    },
+    "form": {
+        "title": "Create organisation",
+        "name": "Organisation name",
+        "nameRequired": "Organisation name is required.",
+        "nameMinLength": "Name must contain at least 3 characters.",
+        "nameMaxLength": "Name cannot exceed 80 characters.",
+        "nameDuplicate": "An organisation with this name already exists.",
+        "status": "Status",
+        "statusRequired": "Please select a status.",
+        "ownerEmail": "Owner email",
+        "ownerEmailRequired": "Owner email is required.",
+        "ownerEmailInvalid": "Enter a valid email address.",
+        "memberCount": "Member count",
+        "memberCountMin": "Member count cannot be negative.",
+        "submit": "Create organisation",
+        "cancel": "Cancel",
+        "success": "Organisation created successfully.",
+        "error": "Unable to create organisation."
+    },
+    "common": {
+        "unknown": "Unknown",
+        "close": "Close",
+        "required": "Required",
+        "optional": "Optional"
+    }
+}
