@@ -5,7 +5,7 @@
     },
     "organisation": {
         "title": "Organisations",
-        "description": "View and manage all organisations.",
+        "description": "View, manage and explore all organisations.",
         "create": "Create organisation",
         "searchLabel": "Search organisations",
         "searchPlaceholder": "Search by organisation name...",
